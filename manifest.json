@@ -1,0 +1,23 @@
+{
+	"manifest_version": 2,
+	"name": "mirrativ_commentRecord",
+	"version": "1.0.0.0",
+	"description": "Recording comments on mirrativ.",
+
+	"browser_action": {
+		"default_title" : "mir_comRec",
+		"default_popup": "./popup.html"
+	},
+
+	"permissions" : [
+		"tabs"
+	],
+
+	"content_scripts": [
+		{
+			"matches": ["https://www.mirrativ.com/*"],
+			"js": ["jquery-3.3.1.min.js","script.js"],
+			"run_at": "document_end"
+		}
+	]
+}
