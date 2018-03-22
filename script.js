@@ -9,7 +9,7 @@ var observer = new MutationObserver(function (MutationRecord, MutationObserver){
   		if (MutRec.target.nodeName == "SPAN") {
   			MutRec.addedNodes.forEach(function(div,index,ar){
   				var message = $(div.children[1])[0];
-  				var data = '{"cnt":' + comNum + ',"time":"' + time + '","user":"' + $(message.children[0]).text() + '","comment":"' + $(message.children[1]).text() + '"}';
+  				var data = JSON.stringify({cnt:comNum, time:time, user:$(message.children[0]).text() , comment:$(message.children[1]).text()});
   				sessionStorage['com' + comNum] = data;
   				console.log(data);
   				comNum = comNum + 1;
@@ -37,12 +37,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
 		//export
 		var saveData;
-		saveData = '{"info":"' + sessionStorage.info + '"';
+		saveData = {info:sessionStorage.info};
 		for (var i = 0; i <= comNum-1; i++) {
-			saveData = saveData + ',"com' + i + '":' + sessionStorage['com'+i];
+			saveData['com'+i] = JSON.parse(sessionStorage['com'+i]);
 		}
-		saveData = saveData + '}';
-		var saveBlob = new window.Blob([saveData], {"type":"application/json"});
+		var saveBlob = new window.Blob([JSON.stringify(saveData,undefined,2)], {"type":"application/json"});
 		var saveLink = $("<a></a>");
 		saveLink.prop("href",window.URL.createObjectURL(saveBlob));
 		saveLink.prop("download", "comment.json");
